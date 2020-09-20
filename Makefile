@@ -19,6 +19,7 @@ fmt:
 	go fmt $(DIRS)
 
 generate:
+	# Note: protoc compiler must be provided in $PATH already
 	go install google.golang.org/protobuf/cmd/protoc-gen-go
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	go install golang.org/x/tools/cmd/stringer
