@@ -1,0 +1,70 @@
+syntax = "proto3";
+package batagar;
+
+// option go_package = "github.com/teawithsand/batagar/internal/pb";
+option go_package = ".;pb";
+
+import "google/protobuf/empty.proto";
+
+// Separate service, so backward compatibility for Coordinator service is 
+// not a concern.
+message CoordinatorManifest {
+    uint32 version = 1;
+}
+
+service Manifest {
+    rpc GetManifest (google.protobuf.Empty) returns (CoordinatorManifest);
+}
+
+message CorpusFileHeader {
+    string name = 1;
+    bytes digest = 2;
+}
+
+message CorpusFile {
+    CorpusFileHeader header = 1;
+    bytes content = 2;
+}
+
+message RequestHeaders {
+    string task_id = 1;
+    string auth_token = 2;
+}
+
+message ListCorpusFilesRequest {
+    RequestHeaders headers = 1;
+}
+
+message GetCorpusFileRequest {
+    RequestHeaders headers = 1;
+}
+
+message NewCrasherFoundRequest {
+    RequestHeaders headers = 1;
+    bytes content = 2;
+}
+
+message NewCorpusFoundRequest {
+    RequestHeaders headers = 1;
+    bytes content = 2;
+}
+
+message Stats {
+    uint64 running_for_sec = 1;
+    uint64 total_runs = 2;
+    uint32 thread_count = 3;
+}
+
+message NewStatsRequest {
+    RequestHeaders headers = 1;
+    Stats stats = 2;
+}
+
+service Coordinator {
+    rpc ListCorpusFiles (ListCorpusFilesRequest) returns (stream CorpusFileHeader);
+    rpc GetCorpusFile (GetCorpusFileRequest) returns (CorpusFile);
+    
+    rpc NewCrasherFound (NewCrasherFoundRequest) returns (google.protobuf.Empty);
+    rpc NewCorpusFound (NewCorpusFoundRequest) returns (google.protobuf.Empty);
+    rpc NewStats (NewStatsRequest) returns (google.protobuf.Empty);
+}
