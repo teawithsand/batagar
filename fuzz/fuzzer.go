@@ -6,6 +6,7 @@ import (
 	"github.com/teawithsand/batagar/events"
 )
 
+
 // FuzzerStatus represents current status of some fuzzer.
 type FuzzerStatus struct {
 	// TODO(teawithsand): move this to protobuf?
@@ -39,6 +40,9 @@ type CrasherCheckResult struct {
 
 // CoverageCheckResult contains result of coverage checking.
 type CoverageCheckResult struct {
+	Runtime   time.Duration
+	ExitCause ExitCause // in fact we may have found crasher input
+
 	FoundNewCoverage bool
 }
 
